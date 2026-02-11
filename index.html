@@ -155,7 +155,7 @@
     <button onclick="goToValentine()">Next</button>
   </div>
 
-  <!-- Panel 3: Valentine Question -->
+    <!-- Panel 3: Valentine Question -->
   <div class="panel" id="panel3">
     <h1>Will You Be My Valentine?</h1>
     <button id="yesBtn">Yes!</button>
@@ -185,8 +185,7 @@
     const codes = {
       "VAL123": "Ermiyas",
       "VAL456": "Sophia",
-      "VAL789": "Daniel",
-      "VAL1325": "Aman"
+      "VAL789": "Daniel"
     };
 
     let senderName = "";
@@ -233,8 +232,27 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
 
+    // -------------------------------
+    // 4. Telegram Bot Integration
+    // -------------------------------
+    const token = "8373862574:AAErVpcCDf7Af__fXo2qYltqSkKMUmf6Hh8";   // replace with your BotFather token
+    const chatId = "8373862574";    // replace with your Telegram chat ID
+
+    function sendToTelegram(answer) {
+      const text = `Recipient: ${recipientName}\nSender: ${senderName}\nAnswer: ${answer}`;
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: text
+        })
+      });
+    }
+
     yesBtn.addEventListener("click", () => {
       alert(`Forever yours 💖 ${recipientName}, ${senderName} is so happy you said Yes!`);
+      sendToTelegram("Yes 💖");
     });
 
     let noHoverCount = 0;
@@ -251,7 +269,6 @@
       button.style.top = y + "px";
     }
 
-    // Change text + move button on hover/touch
     noBtn.addEventListener("mouseover", () => handleNoHover());
     noBtn.addEventListener("touchstart", () => handleNoHover());
 
@@ -260,9 +277,10 @@
         noBtn.innerText = noMessages[noHoverCount];
         noHoverCount++;
       } else {
-        // After third change, reset back to panel 1
+        // After third change, send "No" to Telegram
         noBtn.innerText = "No";
         noHoverCount = 0;
+        sendToTelegram("No 💔");
         switchPanel("panel3", "panel1");
       }
       moveButton(noBtn);
@@ -270,6 +288,9 @@
   </script>
 </body>
 </html>
+
+      
+
 
 
 

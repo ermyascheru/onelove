@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Valentine's Journey</title>
-  <!-- Romantic cursive font -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     body {
@@ -18,7 +16,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .panel {
       display: none;
       flex-direction: column;
@@ -34,20 +31,17 @@
       top: 0;
       left: 0;
     }
-
     .active {
       display: flex;
       opacity: 1;
       transform: scale(1);
     }
-
     h1, h2 {
       font-family: 'Great Vibes', cursive;
       color: #fff;
       text-shadow: 0 0 10px #ff6699, 0 0 20px #ff3366;
       margin-bottom: 20px;
     }
-
     input {
       padding: 10px;
       border-radius: 10px;
@@ -55,7 +49,6 @@
       font-size: 1em;
       margin-bottom: 15px;
     }
-
     button {
       padding: 12px 20px;
       background: linear-gradient(to right, #ff99cc, #ff3366);
@@ -68,20 +61,14 @@
       box-shadow: 0 0 10px #ff6699;
       transition: transform 0.3s ease;
     }
-    button:hover {
-      transform: scale(1.1);
-    }
+    button:hover { transform: scale(1.1); }
+    #noBtn { position: absolute; }
 
-    #noBtn {
-      position: absolute;
-    }
-
-    /* Balloons, flowers, and hearts */
+    /* Balloons, flowers, hearts */
     .balloon, .flower, .heart {
       position: absolute;
       animation: float 6s infinite ease-in-out;
     }
-
     .balloon {
       width: 50px;
       height: 70px;
@@ -97,14 +84,12 @@
       height: 20px;
       background: #333;
     }
-
     .flower {
       width: 40px;
       height: 40px;
       background: radial-gradient(circle, #ffccff, #ff66b2);
       border-radius: 50%;
     }
-
     .heart {
       width: 20px;
       height: 20px;
@@ -121,16 +106,10 @@
     }
     .heart::before { top: -10px; left: 0; }
     .heart::after { left: 10px; top: 0; }
-
     @keyframes float {
       0% { transform: translateY(0); }
       50% { transform: translateY(-40px); }
       100% { transform: translateY(0); }
-    }
-
-    @media (max-width: 600px) {
-      h1, h2 { font-size: 1.5em; }
-      button { padding: 10px 15px; font-size: 0.9em; }
     }
   </style>
 </head>
@@ -155,14 +134,21 @@
     <button onclick="goToValentine()">Next</button>
   </div>
 
-    <!-- Panel 3: Valentine Question -->
+  <!-- Panel 3: Valentine Question -->
   <div class="panel" id="panel3">
     <h1>Will You Be My Valentine?</h1>
     <button id="yesBtn">Yes!</button>
     <button id="noBtn">No</button>
   </div>
 
-  <!-- Balloons, Flowers, Hearts -->
+  <!-- Panel 4: Final Answer -->
+  <div class="panel" id="panel4">
+    <h1 id="finalMessage"></h1>
+    <p>📸 Please screenshot this message and send it back to me!</p>
+    <button onclick="switchPanel('panel4','loginPanel')">Restart</button>
+  </div>
+
+  <!-- Graphics -->
   <div class="balloon" style="left:10%; top:70%; animation-delay:0s;"></div>
   <div class="balloon" style="left:30%; top:80%; animation-delay:2s;"></div>
   <div class="balloon" style="left:50%; top:75%; animation-delay:4s;"></div>
@@ -179,15 +165,8 @@
   <div class="heart" style="left:80%; top:50%; animation-delay:3s;"></div>
 
   <script>
-    // -------------------------------
-    // 1. Unique Access Code System
-    // -------------------------------
-    const codes = {
-      "VAL123": "Ermiyas",
-      "VAL456": "Sophia",
-      "VAL789": "Daniel"
-    };
-
+    // Access Codes
+    const codes = { "VAL123": "Ermiyas", "VAL456": "Sophia", "VAL789": "Daniel" };
     let senderName = "";
     let recipientName = "";
 
@@ -201,9 +180,6 @@
       }
     }
 
-    // -------------------------------
-    // Panel Switching Helper
-    // -------------------------------
     function switchPanel(from, to) {
       document.getElementById(from).classList.remove("active");
       setTimeout(() => {
@@ -211,19 +187,13 @@
       }, 300);
     }
 
-    // -------------------------------
-    // 2. Personalization with Sender + Recipient
-    // -------------------------------
     function goToQuote() {
       recipientName = document.getElementById("nameInput").value || "My Love";
-      document.getElementById("quoteText").innerText = 
-        `Dear ${recipientName}, from ${senderName}: My heart beats faster whenever I think of you. You are my Valentine today and always 💕`;
+      document.getElementById("quoteText").innerText =
+        `Dear ${recipientName}, from ${senderName}: My heart beats faster whenever I think of you 💕`;
       switchPanel("panel1", "panel2");
     }
 
-    // -------------------------------
-    // 3. Valentine Response Handling
-    // -------------------------------
     function goToValentine() {
       switchPanel("panel2", "panel3");
       moveButton(noBtn);
@@ -232,35 +202,14 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
 
-    // -------------------------------
-    // 4. Telegram Bot Integration
-    // -------------------------------
-    const token = 8357378880:AAGSbLUoP6y0nKavzBmy20v8mHGCL_hoaSc;   // replace with your BotFather token
-    const chatId = 8373862574;    // replace with your Telegram chat ID
-
-    function sendToTelegram(answer) {
-      const text = `Recipient: ${recipientName}\nSender: ${senderName}\nAnswer: ${answer}`;
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: text
-        })
-      });
-    }
-
     yesBtn.addEventListener("click", () => {
-      alert(`Forever yours 💖 ${recipientName}, ${senderName} is so happy you said Yes!`);
-      sendToTelegram("Yes 💖");
+      document.getElementById("finalMessage").innerText =
+        `💖 Thank you ${recipientName}! ${senderName} is so happy you said YES! 💖`;
+      switchPanel("panel3", "panel4");
     });
 
     let noHoverCount = 0;
-    const noMessages = [
-      "Are you sure? 😢",
-      "Pretty please 😭",
-      "Ok... I'll ask you again 💔"
-    ];
+    const noMessages = ["Are you sure? 😢","Pretty please 😭","Ok... I'll ask you again 💔"];
 
     function moveButton(button) {
       const x = Math.random() * (window.innerWidth - button.offsetWidth);
@@ -270,18 +219,19 @@
     }
 
     noBtn.addEventListener("mouseover", () => handleNoHover());
-    noBtn.addEventListener("touchstart", () => handleNoHover());
+        noBtn.addEventListener("touchstart", () => handleNoHover());
 
     function handleNoHover() {
       if (noHoverCount < noMessages.length) {
         noBtn.innerText = noMessages[noHoverCount];
         noHoverCount++;
       } else {
-        // After third change, send "No" to Telegram
+        // After third change, show final NO panel
         noBtn.innerText = "No";
         noHoverCount = 0;
-        sendToTelegram("No 💔");
-        switchPanel("panel3", "panel1");
+        document.getElementById("finalMessage").innerText =
+          `💔 Thanks ${recipientName}. ${senderName} will try again another time. 💔`;
+        switchPanel("panel3", "panel4");
       }
       moveButton(noBtn);
     }
@@ -289,7 +239,8 @@
 </body>
 </html>
 
-      
+
+
 
 
 
